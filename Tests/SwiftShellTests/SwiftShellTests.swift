@@ -3,20 +3,23 @@ import Testing
 
 @Test("ECHO: Output") func textOutput() async throws {
     // tests echo terminal output
-    let output = SwiftShell("echo 'Hello, World!'")
+    let shell = SwiftShell()
+    let output = shell.run("echo 'Hello, World!'")
     let expected = "Hello, World!\n"
     #expect(output == expected)
 }
 
 @Test("LS: Directory") func list() async throws {
     // lists user directory and searches for Desktop
-    let userFiles = SwiftShell("ls ~/")
+    let shell = SwiftShell()
+    let userFiles = shell.run("ls ~/")
     #expect(userFiles.contains("Desktop"))
 }
 
 @Test("MKDIR & RM: Directory") func makeRemoveDirectory() async throws {
     // lists working directory contents
-    let listStart = SwiftShell("ls -p")
+    let shell = SwiftShell()
+    let listStart = shell.run("ls -p")
     
     // creates unique name for temporary directory
     var newDirectory = "directory"
@@ -25,19 +28,20 @@ import Testing
     }
     
     // initiates and validates newDirectory creation
-    SwiftShell("mkdir \(newDirectory)")
-    let  listUpdate = SwiftShell("ls -p")
+    shell.run("mkdir \(newDirectory)")
+    let  listUpdate = shell.run("ls -p")
     try #require(listUpdate.contains("\(newDirectory)/"))
     
     // deletes newDirectory and validates directory reversion
-    SwiftShell("rm -rf \(newDirectory)")
-    let listFinal = SwiftShell("ls -p")
+    shell.run("rm -rf \(newDirectory)")
+    let listFinal = shell.run("ls -p")
     #expect(listFinal.contains("\(newDirectory)/") == false)
 }
 
 @Test("TOUCH & RM: File") func  makeRemoveFile () async throws {
     // lists working directory contents
-    let listStart = SwiftShell("ls")
+    let shell = SwiftShell()
+    let listStart = shell.run("ls")
     
     // creates unique name for temporary file
     var newFile = "file"
@@ -46,19 +50,20 @@ import Testing
     }
     
     // initiates and validates newFile creation
-    SwiftShell("touch \(newFile).txt")
-    let listUpdate = SwiftShell("ls")
+    shell.run("touch \(newFile).txt")
+    let listUpdate = shell.run("ls")
     try #require(listUpdate.contains("\(newFile).txt"))
     
     // deletes newDirectory and validates directory reversion
-    SwiftShell("rm \(newFile).txt")
-    let listFinal = SwiftShell("ls")
+    shell.run("rm \(newFile).txt")
+    let listFinal = shell.run("ls")
     #expect(listFinal.contains("\(newFile).txt") == false)
 }
 
 @Test("CAT: Viewing") func  catFile () async throws {
     // lists working directory contents
-    let listStart = SwiftShell("ls")
+    let shell = SwiftShell()
+    let listStart = shell.run("ls")
     
     // creates unique name for temporary file
     var newFile = "catFile"
@@ -67,24 +72,25 @@ import Testing
     }
     
     // initiates and validates newFile creation
-    SwiftShell("echo \"Hello, World!\" >> \(newFile).txt")
-    let listUpdate = SwiftShell("ls")
+    shell.run("echo \"Hello, World!\" >> \(newFile).txt")
+    let listUpdate = shell.run("ls")
     try #require(listUpdate.contains("\(newFile).txt"))
     
     // retrieves and validates newFile contents
-    let contents = SwiftShell("cat \(newFile).txt")
+    let contents = shell.run("cat \(newFile).txt")
     let expected = "Hello, World!\n"
     #expect(contents == expected)
     
     // deletes newFile and validates directory reversion
-    SwiftShell("rm \(newFile).txt")
-    let listFinal = SwiftShell("ls")
+    shell.run("rm \(newFile).txt")
+    let listFinal = shell.run("ls")
     #expect(listFinal.contains("\(newFile).txt") == false)
 }
 
 @Test("MV: File") func  moveFile () async throws {
     // lists working directory contents
-    let listStart = SwiftShell("ls -p")
+    let shell = SwiftShell()
+    let listStart = shell.run("ls -p")
     
     // creates unique names for temporary file and directory
     var newDirectory = "mvDirectory"
@@ -95,26 +101,27 @@ import Testing
     }
     
     // initiates and validates newDirectory and newFile creation
-    SwiftShell("mkdir \(newDirectory)")
-    SwiftShell("touch \(newFile).txt")
-    let listUpdate = SwiftShell("ls -p")
+    shell.run("mkdir \(newDirectory)")
+    shell.run("touch \(newFile).txt")
+    let listUpdate = shell.run("ls -p")
     try #require(listUpdate.contains("\(newDirectory)/"))
     try #require(listUpdate.contains("\(newFile).txt"))
     
     // moves newFile into newDirectory and validates move
-    SwiftShell("mv \(newFile).txt \(newDirectory)/")
-    let listNewDirectory = SwiftShell("ls \(newDirectory)/")
+    shell.run("mv \(newFile).txt \(newDirectory)/")
+    let listNewDirectory = shell.run("ls \(newDirectory)/")
     #expect(listNewDirectory == "\(newFile).txt\n")
     
     // deletes newDirectory and validates directory reversion
-    SwiftShell("rm -rf \(newDirectory)")
-    let listFinal = SwiftShell("ls -p")
+    shell.run("rm -rf \(newDirectory)")
+    let listFinal = shell.run("ls -p")
     #expect(listFinal.contains("\(newDirectory)/") == false)
 }
 
 @Test("CP: File") func copyingFile() async throws {
     // lists working directory contents
-    let listStart = SwiftShell("ls")
+    let shell = SwiftShell()
+    let listStart = shell.run("ls")
     
     // creates unique name for temporary files
     var newFile = "toCopy"
@@ -125,36 +132,41 @@ import Testing
     }
     
     // initiates and validates newFile creation
-    SwiftShell("echo \"Hello, World!\" >> \(newFile).txt")
-    let listUpdate = SwiftShell("ls")
+    shell.run("echo \"Hello, World!\" >> \(newFile).txt")
+    let listUpdate = shell.run("ls")
     try #require(listUpdate.contains("\(newFile).txt"))
-    let fileContents = SwiftShell("cat \(newFile).txt")
+    let fileContents = shell.run("cat \(newFile).txt")
     #expect(fileContents == "Hello, World!\n")
     
     // copies newFile and validates copyFile contents
-    SwiftShell("cp \(newFile).txt \(copyFile).txt")
-    let listCopyUpdate = SwiftShell("ls")
+    shell.run("cp \(newFile).txt \(copyFile).txt")
+    let listCopyUpdate = shell.run("ls")
     try #require(listCopyUpdate.contains("\(copyFile).txt"))
-    let copyContents = SwiftShell("cat \(copyFile).txt")
+    let copyContents = shell.run("cat \(copyFile).txt")
     #expect(copyContents == "Hello, World!\n")
     
     // deletes newFile and copyFile and validates directory reversion
-    SwiftShell("rm \(newFile).txt \(copyFile).txt")
-    let listFinal = SwiftShell("ls")
+    shell.run("rm \(newFile).txt \(copyFile).txt")
+    let listFinal = shell.run("ls")
     #expect(
         listFinal.contains("\(newFile).txt") == false &&
         listFinal.contains("\(copyFile).txt") == false
     )
 }
 
-/*
- @Test("CD: Directory") func testChangingDirectory() async throws {
- let workingPath = SwiftShell("pwd")
- print("Working Path: "+workingPath)
- let cdCommand = SwiftShell("cd ../../")
- print("Cd Command: "+cdCommand)
- let newWorkingPath = SwiftShell("pwd")
- print("New Working Path: "+newWorkingPath)
- 
- }
- */
+
+@Test("CD: Directory") func testChangingDirectory() async throws {
+    // stores working directory
+    let shell = SwiftShell()
+    let pathStart = shell.run("pwd")
+    
+    // initiates and validates navigation to parent folder
+    shell.run("cd ../")
+    let pathUpdate = shell.run("pwd")
+    #expect(pathStart != pathUpdate)
+    
+    // validates directory navigation and reversion
+    shell.run("cd \(pathStart)")
+    let pathFinal = shell.run("pwd")
+    #expect(pathStart == pathFinal)
+}
