@@ -4,12 +4,12 @@ import Foundation
 /// Available for 10.15.4 and higher due to other data parsing methods depreciating
 
 @available(macOS 10.15.4, *)
-public class ShellCommand {
+public class SwiftShell {
     // workingDirectory state maintained between process() instances
     private var workingDirectory = "./"
     
     @discardableResult
-    func run(_ command: String) -> String {
+    public func run(_ command: String) -> String {
         // shell instance run in process
         // standard output over pipe
         let process = Process()
