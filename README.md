@@ -16,9 +16,6 @@ import PackageDescription
 
 let package = Package(
     name: {your package name},
-    platforms: [
-        .macOS(.v10_15) // applied as a SwiftShell requirement
-    ],
     dependencies: [
         .package(url: "https://github.com/thomasalfonso/SwiftShell.git", branch: "main" ),
     ],
@@ -39,24 +36,19 @@ Import library
 import SwiftShell
 ```
 
-Instantiation and running commands 
+Instantiate SwiftShell and issue commands 
 ```swift
 let shell = SwiftShell()
 shell.run("touch newFile.txt")
 ```
 
-To avoid using depreceated methods, the data parsing method SwiftShell uses only supports macOS 10.15.4 and higher. For this reason code is wrapped with an #available attribute.
+With the information provided by the previous code snippets, you should be able to use SwiftShell as intended. If there are any issues, please raise a ticket. 
 
-```swift
-if #available(macOS 10.15.4, *) {
-    let shell = SwiftShell()
-    shell.run("rm newFile.txt")
-} else {
-    print("SwiftShell is only available on macOS 10.15.4 or higher.")
-}
-```
 
-### Example Use
+
+
+
+### More Code Examples
 
 Receiving standard output from shell by using *echo*
 
@@ -91,7 +83,5 @@ Using Swift string interpolation with shell commands
 To see more examples of library usage check SwiftShellTests attached to this package. The tests contain many more basic shell commands being used. 
 
 ### Limitations
-Due to the requirements of the libraries being leveraged to make SwiftShell, the library is only compatible on macOS systems running 10.15.4 or higher. Other operating systems capable of running Swift will not be able to use SwiftShell.
 
 To find the default system shell of the system, an environment variable containing the path to the shell is read from the process running the Swift software. If the preferred system shell is not running the application process then its executable address will not be provided to SwiftShell, thus commands provided to SwiftShell will not be provided to the preferred shell interface. 
-
