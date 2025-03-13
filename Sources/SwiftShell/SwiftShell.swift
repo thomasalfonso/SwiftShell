@@ -53,12 +53,15 @@ public class SwiftShell {
         return commandData
     }
     
+    // returns rawData retrieved from pipe instance
     private func pipeResponse (_ pipe : Pipe) throws -> Data {
         if #available(macOS 10.15.4, *) {
+            // pipe parsing for newer operating systems
             guard let rawData = try pipe.fileHandleForReading.readToEnd() else { throw ShellError.PipeEmpty }
             return rawData
         }
         else {
+            // depreciated pipe parsing for older devices
             let rawData = pipe.fileHandleForReading.readDataToEndOfFile()
             return rawData
         }
