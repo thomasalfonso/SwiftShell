@@ -4,7 +4,7 @@ import Foundation
 /// Available for 10.15.4 and higher due to other data parsing methods depreciating
 
 @available(macOS 10.15.4, *)
-class SwiftShell {
+class ShellCommand {
     // workingDirectory state maintained between process() instances
     private var workingDirectory = "./"
     
