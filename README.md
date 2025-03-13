@@ -1,6 +1,6 @@
 # SwiftShell
 
-SwiftShell is a Swift library that empowers Swift applications to interact with a system’s default shell. It allows developers to send commands to a command line interface and receive output directly within their Swift applications. 
+SwiftShell is a Swift library that empowers Swift applications to interact with a system’s default shell. Implementing the library allows developers to send system commands directly to a shell executable, where the commands will be interpreted, actioned, and the standard output processed and delivered within the Swift application.  
 
 ### Purpose
 
