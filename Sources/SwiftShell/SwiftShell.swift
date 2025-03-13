@@ -8,6 +8,8 @@ public class SwiftShell {
     // workingDirectory state maintained between process() instances
     private var workingDirectory = "./"
     
+    public init() {}
+    
     @discardableResult
     public func run(_ command: String) -> String {
         // shell instance run in process
