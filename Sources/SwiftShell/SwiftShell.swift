@@ -3,7 +3,6 @@ import Foundation
 /// Returns a String containing the default system shell output after command execution
 /// Available for 10.15.4 and higher due to other data parsing methods depreciating
 
-@available(macOS 10.15.4, *)
 public class SwiftShell {
     // workingDirectory state maintained between process() instances
     private var workingDirectory = "./"
@@ -38,8 +37,8 @@ public class SwiftShell {
     // parses data, updates workingDirectory, and returns standard output from shell
     private func parse (_ pipe: Pipe) throws -> String {
         // pulls raw data from pipe
-        guard let rawData = try pipe.fileHandleForReading.readToEnd() else { throw ShellError.PipeEmpty }
-        
+        let rawData = try pipeResponse(pipe)
+    
         // parses data to separate user command response and pwd response
         let data = String(decoding: rawData, as: UTF8.self).split(separator: "\n")
         guard let lastLine = data.last else { throw ShellError.DataAbsent }
@@ -52,6 +51,17 @@ public class SwiftShell {
         // returns command data
         let commandData = String(data.joined(separator: "\n")[..<directoryIndex])
         return commandData
+    }
+    
+    private func pipeResponse (_ pipe : Pipe) throws -> Data {
+        if #available(macOS 10.15.4, *) {
+            guard let rawData = try pipe.fileHandleForReading.readToEnd() else { throw ShellError.PipeEmpty }
+            return rawData
+        }
+        else {
+            let rawData = pipe.fileHandleForReading.readDataToEndOfFile()
+            return rawData
+        }
     }
     
     // describes errors
